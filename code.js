@@ -3,33 +3,45 @@ var gamersPos = [];
 actionTime = Date.now();
 actionId = 0;
 done = true;
+lastSend = "";
 sendDataToAddon();
+getAction();
 
 function sendDataToAddon()
 {
-    //gamersPos
-    if(gamers.length != NaN)
-    {
-        for(i=0;i&lt;gamers.length;i++)
+        //gamersPos
+        if(gamers.length != NaN)
         {
-            pos = i + 1;
-            gamersPos[i] = {pos: $("#yolo td .spieler"+pos).parent().attr("rel")*1, username: gamers[i]};
+            for(i=0;i&lt;gamers.length;i++)
+            {
+                pos = i + 1;
+                gamersPos[i] = {pos: $("#yolo td .spieler"+pos).parent().attr("rel")*1, username: gamers[i]};
+            }
         }
+        else
+        {
+            gamersPos = null;
+        }
+    if(lastSend == "" || (lastSend.number != wuerfelNumb || lastSend.gameTask != $('#gameWhat').text() || lastSend.player != $('b.dran').text().slice(0,-2) || lastSend.gameId != gameId || lastSend.additionalTask != $('#ereignis').text()))
+    {
+        //send data
+        $.ajax({
+            method: "POST",
+            url: "https://pdg.jaksmakowalo.pl/recive_data.php",
+            data: { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()}
+        })
+            .done(function( msg ) {
+                lastSend = { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()};
+                setTimeout(getAction(), 1000);
+            });
     }
     else
     {
-        gamersPos = null;
+        setTimeout(getAction(), 1000);
     }
-    //send data
-    $.ajax({
-        method: "POST",
-        url: "https://pdg.jaksmakowalo.pl/recive_data.php",
-        data: { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()}
-    })
-        .done(function( msg ) {
-            getAction();
-        });
+
 }
+
 function getAction()
 {
     $.ajax({
