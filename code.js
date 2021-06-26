@@ -61,6 +61,11 @@ function getAction()
                     $('#wuerfel').trigger('click');
                     done = true;
                 }
+                else if(done == false)
+                {
+                    $('input[value="'+ actionName +'"]').trigger('click');
+                    done = true;
+                }
             }
             sendDataToAddon();
         });

@@ -79,9 +79,18 @@
                         players += '<span class="col-md-3">'+msg.gamers[i][4]+' ('+msg.gamers[i][2]+'/70)</span>';
                     }
                     $('#players').html(players);
-                    $('#additionalTask').text(msg.additionalTask);
                     if(isMyTurn(msg.player))
                     {
+                        $('#additionalTask').html((msg.additionalTask).replace("onclick=","class='btn btn-primary mt-2' "));
+                        $('#additionalTask').find('input').on('click', function (e)
+                        {
+                            $.ajax({
+                                method: "POST",
+                                url: "click.php",
+                                data: {gameId: <?php echo $_GET['gameId'] ?>, actionName: e.target.value, done: false}
+                            });
+                            console.log("send");
+                        });
                         $('#player').text("");
                         $('#playerMsgContainer').removeClass('text-info');
                         $('#playerMsgContainer').addClass('text-success');
@@ -90,6 +99,7 @@
                     }
                     else
                     {
+                        $('#additionalTask').text(extractText(msg.additionalTask));
                         clicked = false;
                         $('#player').text(msg.player);
                         $('#playerMsgContainer').removeClass('text-success');
@@ -114,5 +124,20 @@
             return true;
         }
         return false;
+    }
+
+    /**
+     * Extracts only text from html
+     * @param html
+     * @returns {string|string}
+     * @constructor
+     */
+    function extractText(html){
+        // Create a new div element
+        var temporaryDivElement = document.createElement("div");
+        // Set the HTML content with the providen
+        temporaryDivElement.innerHTML = html;
+        // Retrieve the text property of the element (cross-browser support)
+        return temporaryDivElement.textContent || temporaryDivElement.innerText || "";
     }
 </script>
