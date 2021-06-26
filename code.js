@@ -24,6 +24,7 @@ function sendDataToAddon()
         }
     if(lastSend == "" || (lastSend.number != wuerfelNumb || lastSend.gameTask != $('#gameWhat').text() || lastSend.player != $('b.dran').text().slice(0,-2) || lastSend.gameId != gameId || lastSend.additionalTask != $('#ereignis').text()))
     {
+        lastSend = { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()};
         //send data
         $.ajax({
             method: "POST",
@@ -31,7 +32,6 @@ function sendDataToAddon()
             data: { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()}
         })
             .done(function( msg ) {
-                lastSend = { number: wuerfelNumb, gameTask: $('#gameWhat').text(), player: $('b.dran').text().slice(0,-2), gameId: gameId, gamersPos: gamersPos, additionalTask: $('#ereignis').text()};
                 setTimeout(getAction(), 1000);
             });
     }
