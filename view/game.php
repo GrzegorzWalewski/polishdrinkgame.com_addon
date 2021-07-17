@@ -108,7 +108,7 @@
                         $('#number i').css('color', 'white');
                     }
                 }
-                reciveDataFromPDG();
+                setTimeout(function(){ reciveDataFromPDG(); }, 1000);
             });
     }
 
